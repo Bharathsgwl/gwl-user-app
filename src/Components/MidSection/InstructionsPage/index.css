@@ -1,5 +1,9 @@
 .Instructionspage-container{
   border-color: red ;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
 .Instructions-headline{
   text-align: center !important;
@@ -16,4 +20,11 @@ justify-content: center !important;
 }
 .Box-css{
   width: 80%;
+}
+.instruction-container{
+  text-align: center ;
+  font-family: Raleway;
+}
+.instruction-font{
+  font-family: Raleway !important;
 }

@@ -1,0 +1,15 @@
+.ExamSectionstyle{
+
+}
+.display-timer{
+      text-align: center;
+      padding-left: 242px;
+      font-family: Open Sans;
+}
+.current-timer{
+  size:10px;
+}
+.remainingtimecolor{color: brown;}
+.examheadingcolor{
+  color: #FE7F69 !important;
+}
