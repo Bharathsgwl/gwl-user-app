@@ -9,7 +9,7 @@ class Header extends React.Component{
     return(
 
       <Grid container>
-      <AppBar  position="static"  color="default">
+      <AppBar  position="static"  classes={{root:"appbarstyle"}} colr="default">
       <Toolbar>
       <Grid item md={4}>
       <Typography classes={{root:"MuiAppBar"}} variant="h6" color="#607D8B">
@@ -25,6 +25,7 @@ class Header extends React.Component{
       </Grid>
       </Toolbar>
       </AppBar>
+
       </Grid>
 
 
