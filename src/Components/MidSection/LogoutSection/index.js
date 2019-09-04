@@ -18,7 +18,7 @@ class LogoutSection extends React.Component{
       <Grid container justify="center" classes={{root:"logoutpage-container"}}>
         <Box boxShadow={0}  display="block" classes={{root:"Box-css1"}} bgcolor="background.paper"  color="text.secondary">
       <Grid item md={12} classes={{root:""}}>
-      <h3>thank you for attending interview </h3>
+      <h3>Thank you for attending interview </h3>
       </Grid>
       </Box>
       </Grid>

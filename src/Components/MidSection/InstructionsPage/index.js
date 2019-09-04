@@ -5,36 +5,11 @@ import {BrowserRouter as Router,Route,NavLink,Link} from 'react-router-dom';
 import RuleList from '../RuleList';
 import ExamSection from "../ExamSection";
 import Header from '../../Header';
-class InstructionsPage extends React.Component{
-state = {
-        disabled:true,
-        rule:[{
-          rulename: "This test contains only Aptitude Section,This test contains following sections are Quantitative and Logical Reasoning."
-        },
-          {
-            rulename :"Quantitative Aptitude  section consists of maths questions from the topics like algebra, time & work, time, speed & distance, arithmetic."
-          },
-          {
-            rulename:"Logical Reasoning Aptitude section consists of reasoning based questions from common topics of reasoning skills."
-          },
-          {
-            rulename:"If You tried to open another window the session will expire automaticaly and it will considerd as a mall practice."
-          }
-      ]
-}
-  handleOnChange= (e)=>{
-    this.setState({disabled: !e.target.checked});
-    console.log("checked")
-}
-handleOnStart=()=>{
-  const {history}=this.props
-  history.push('/user/ExamSection');
-}
-  render(){
+
+const InstructionsPage=({handleOnChange,disabled,handleOnStart,rule})=>{
     const inner = (
     <Box bgcolor="background.paper" m={1} border={3} style={{ width: '15rem', height: '15rem' }} />
   );
-  const {rule,instructions,disabled}=this.state
     return(
       <div classes={{root:"Instructionspage-container"}}>
       <div>
@@ -54,18 +29,16 @@ handleOnStart=()=>{
     </Grid>
 <br />
       <Grid item-md={12}>
-      <Checkbox checked={this.state.bharath} onChange={this.handleOnChange}
-      value="bharath" >
-      </Checkbox>
+      <Checkbox  onChange={handleOnChange} />
 agree and continue,
       </Grid>
       <Grid item-md={12}>
-      <Button variant="contained" color="primary" disabled={disabled}  onClick={this.handleOnStart}>Start</Button>
+      <Button variant="contained" color="primary" disabled={disabled}  onClick={handleOnStart}>Start</Button>
       </Grid>
       </Box>
       </Grid>
       </div>
     );
   }
-}
+
 export default InstructionsPage;
