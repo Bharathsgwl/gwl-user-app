@@ -1,0 +1,12 @@
+.logoutpage-container{
+  border-color: red ;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  text-align: center ;
+  font-family: sans-serif;
+}
+.Box-css1{
+  width:50%;
+}

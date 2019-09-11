@@ -1,0 +1,21 @@
+.nextbuttonstyle{
+  display: flex !important;
+  align-items: flex-end !important;
+    height:fit-content !important;
+    align-self: flex-end !important;
+    float: right !important;
+}
+.previousbutton{
+  height:fit-content !important;
+  align-self: flex-end !important;
+  float: left !important;
+
+}
+.instruction-line{
+  display:flex !important;
+  flex:left !important;
+  box-shadow: none !important;
+}
+.submitstyle{
+  float: left !important;
+}
