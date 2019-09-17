@@ -10,6 +10,8 @@
 }
 .Instructions-font-style{
   font-family: initial !important;
+  color: #009688 !important;
+  text-align: center !important;
 }
 .Paper-page{
   padding-left: 137px;
@@ -26,5 +28,5 @@ justify-content: center !important;
   font-family: Raleway;
 }
 .instruction-font{
-  font-family: Raleway !important;
+  font-family: Arial,Helvetica,sans-serif !important;
 }

@@ -1,2 +1,0 @@
-export const ON_CLICK_START='ON_CLICK_START';
-export const HANDLE_ON_CHANGE='HANDLE_ON_CHANGE';
