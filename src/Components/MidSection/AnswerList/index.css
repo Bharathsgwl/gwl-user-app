@@ -1,0 +1,5 @@
+.instruction-line{
+  display:flex !important;
+  flex:left !important;
+  box-shadow: none !important;
+}

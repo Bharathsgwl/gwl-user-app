@@ -1,0 +1,13 @@
+.MuiAppBar{
+  box-shadow: none;
+  color: white;
+}
+.typo{
+  padding-left: 20px;
+}
+.header-section{
+  text-align: center;
+}
+.appbarstyle{
+      background-color: #009688 !important;
+}

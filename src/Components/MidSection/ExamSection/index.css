@@ -1,0 +1,28 @@
+.ExamSectionstyle{
+
+}
+.display-timer{
+      text-align: center;
+      padding-left: 242px;
+      font-family: Open Sans;
+}
+.current-timer{
+  size:10px;
+}
+.remainingtimecolor{
+  color: white;
+  padding-left: 146px;
+}
+.examheadingcolor{
+  color: white  !important;
+  background-color: #009688 !important;
+}
+.ExamSectionscolor{
+  background-color: #009688 ;
+}
+.endtestbutton{
+  direction: rtl;;
+}
+.material-icons{
+  padding: 0px 15px 0px !important;
+}

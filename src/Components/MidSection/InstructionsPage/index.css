@@ -1,0 +1,32 @@
+.Instructionspage-container{
+  border-color: red ;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.Instructions-headline{
+  text-align: center !important;
+}
+.Instructions-font-style{
+  font-family: initial !important;
+  color: #009688 !important;
+  text-align: center !important;
+}
+.Paper-page{
+  padding-left: 137px;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+
+}
+.Box-css{
+  width: 80%;
+}
+.instruction-container{
+  text-align: center ;
+  font-family: Raleway;
+}
+.instruction-font{
+  font-family: Arial,Helvetica,sans-serif !important;
+}
