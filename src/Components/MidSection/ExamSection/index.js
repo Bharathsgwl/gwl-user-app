@@ -7,7 +7,7 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Paper
+  Paper,Card
 } from "@material-ui/core";
 import Radio, { RadioProps } from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -76,7 +76,7 @@ class ExamSection extends React.Component {
   render() {
     const { hours, minutes, seconds, capture } = this.state;
     return (
-      <Grid container justify content="center">
+      <Grid  justify content="center">
         <AppBar
           position="static"
           classes={{ root: "examheadingcolor" }}
@@ -98,13 +98,11 @@ class ExamSection extends React.Component {
                   }}
                   variant="h5"
                 >
-                  {" "}
-                  ExamSection{" "}
+                  ExamSection
                 </Typography>
               </Grid>
               <Grid item md={2}>
                 <Typography classes={{ root: "remainingtimecolor" }}>
-                  {" "}
                   <i class="material-icons">timer</i>
                   <b> {hours + ":" + minutes + ":" + seconds} </b>
                 </Typography>
@@ -112,7 +110,7 @@ class ExamSection extends React.Component {
             </Grid>
           </Toolbar>
         </AppBar>
-        <Grid item md={12} color="default">
+        < Grid item md={12} color="default">
           <QuestionSection />
         </Grid>
       </Grid>

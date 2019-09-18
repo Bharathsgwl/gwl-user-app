@@ -1,10 +1,11 @@
 import React from 'react';
 import './index.css';
-import {AppBar,Toolbar,Typography,Grid,Box,Paper,Button} from '@material-ui/core';
+import {AppBar,Toolbar,Typography,Grid,Box,Button,Card} from '@material-ui/core';
 import {connect} from 'react-redux';
 import {handleOnLogout} from '../../../redux/actions';
 import {withRouter} from 'react-router-dom';
-
+import LottieControl from '../../LottieControl';
+import pinjump from '../../stories/972-done.json';
 const LogoutSection =(props)=>{
   console.log(props);
   const {question,index,handleOnLogout,history}=props;
@@ -28,12 +29,15 @@ const LogoutSection =(props)=>{
       </Toolbar>
       </AppBar>
       <Grid container justify="center" classes={{root:"logoutpage-container"}}>
-        <Box boxShadow={0}  display="block" classes={{root:"Box-css1"}} bgcolor="background.paper"  color="text.secondary">
-      <Grid item md={12} classes={{root:""}}>
-      <h3>Thank you for attending interview </h3>
-
+        <Card   classes={{root:"Box-css1"}} >
+      <Grid item md={12} >
+      <Typography
+        variant="h5">
+        Thank You For Taking The Test
+      </Typography>
       </Grid>
-      </Box>
+        <LottieControl animation={pinjump} height={300} width={300} />
+      </Card>
       </Grid>
 </div>
 
@@ -52,6 +56,3 @@ const LogoutSection =(props)=>{
 
 
 export default connect(mapStateToProps,mapDispatchToProps)(withRouter(LogoutSection));
-// {question.map((q,index)=>{
-//  return <Paper>{index+1}.{q.questionname}:{q.correctvalue}, ans:{q.value}</Paper>
-// })}

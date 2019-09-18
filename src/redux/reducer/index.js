@@ -4,9 +4,7 @@ const applicationIntialState = {
   disabled2: false,
   disabled3: true,
   open: false,
-  snackBar: {
-    snackbarOpen: false
-  },
+    snackbarOpen: false,
   rule: [
     {
       rulename:
@@ -76,7 +74,10 @@ const applicationIntialState = {
   login: {
     username: "",
     password: ""
-  }
+  },
+  fullWidth: false,
+    maxWidth: 'xl',
+    isStopped: false, isPaused: false,height:0,width:0
 };
 
 const reducer = (state = applicationIntialState, action) => {
@@ -90,17 +91,17 @@ const reducer = (state = applicationIntialState, action) => {
       };
     case actionTypes.ON_CLICK_LOGIN:
       var history = action.payload.history;
-      var snackBar = state;
-      var snackbarOpen = state.snackBar;
+      var {snackbarOpen} = state;
       const { username, password } = state.login;
       var message = state.message;
-      snackbarOpen = !snackbarOpen;
+snackbarOpen = !snackbarOpen;
       debugger;
       username === "GWL" && password === "123"
         ? history.push("/user/InstructionsPage")
         : username == "" && password == ""
         ? (message = "Enter Credentials")
         : (message = "Invalid Credentials");
+
       debugger;
       return {
         ...state,
@@ -223,8 +224,8 @@ const reducer = (state = applicationIntialState, action) => {
         open
       };
     case actionTypes.HANDLE_ON_SNACKBAR_CLOSE:
-      var { snackBar } = state;
-      var { snackbarOpen } = state.snackBar;
+
+      var { snackbarOpen } = state;
       debugger;
       snackbarOpen = !snackbarOpen;
       debugger;
@@ -245,7 +246,10 @@ const reducer = (state = applicationIntialState, action) => {
       history.push("/");
       return {
         ...state,
-        history
+        history,
+        login:{
+          username:"",password:"",snackbarOpen:false
+        }
       };
 
       debugger;

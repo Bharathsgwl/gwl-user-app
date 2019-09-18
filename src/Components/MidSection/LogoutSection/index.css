@@ -1,14 +1,15 @@
 .logoutpage-container{
   border-color: red ;
-  display: flex !important;
-  align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
   text-align: center ;
   font-family: sans-serif;
 }
 .Box-css1{
-  width:50%;
+  width:80%;
+  height:100%;
+  padding-top: 30px !important;
+  margin-top: auto !important;
 }
 .typo{
   padding-left: 20px;

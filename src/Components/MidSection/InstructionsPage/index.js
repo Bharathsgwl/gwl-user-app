@@ -29,18 +29,17 @@ const InstructionsPage = props => {
   const { rule, handleOnChange, disabled, history, onClickStart } = props;
 
   return (
-    <Grid container justify content="center">
+
+    <Grid  justify content="center">
       <Grid item md={12}>
         <AppBar position="static" style={{ background: "#009688" }}>
           <Toolbar>
-            <Grid item md={12}>
               <Typography
                 style={{ fontFamily: '"Apple Color Emoji"' }}
                 variant="h5"
               >
                 GoodWorks Colloquio
               </Typography>
-            </Grid>
           </Toolbar>
         </AppBar>
       </Grid>
