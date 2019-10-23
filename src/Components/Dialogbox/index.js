@@ -30,16 +30,17 @@ const Dialogbox = props => {
     maxWidth,
     fullWidth
   } = props;
+
   return (
     <Dialog
       open={open}
-      aria-labelledby="confirmation-dialog-title"
+      aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
       disableBackdropClick
       disableEscapeKeyDown
     >
-      <DialogTitle id="confirmation-dialog-title">
+      <DialogTitle id="form-dialog-title">
         <span style={{ fontFamily: '"Apple Color Emoji"' }}>
           Are you sure to end Session
         </span>
@@ -53,13 +54,13 @@ const Dialogbox = props => {
         <Button
           color="primary"
           onClick={handleOnClose}
-          style={{ fontFamily: '"Apple Color Emoji"', marginRight: "20px" }}
+          style={{ fontFamily: '"Apple Color Emoji"' }}
         >
           Cancel
         </Button>
         <Button
           color="primary"
-          style={{ fontFamily: '"Apple Color Emoji"', marginLeft: "120px" }}
+          style={{ fontFamily: '"Apple Color Emoji"' }}
           onClick={() => {
             handleOnClickOk(history);
           }}
@@ -70,16 +71,15 @@ const Dialogbox = props => {
     </Dialog>
   );
 };
-const mapStateToProps = ({ open, fullWidth, maxWidth }) => {
+const mapStateToProps = ({  fullWidth, maxWidth }) => {
+
   return {
-    open,
     fullWidth,
     maxWidth
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    handleOnClose: () => dispatch(handleOnClose()),
     handleOnClickOk: history => dispatch(handleOnClickOk(history))
   };
 };

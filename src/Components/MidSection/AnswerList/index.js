@@ -4,8 +4,10 @@ import { Paper } from "@material-ui/core";
 import { connect } from "react-redux";
 const AnswerList = props => {
   console.log(props);
-  const { question } = props;
-  return <div></div>;
+  const { questions } = props;
+
+  console.log(questions[0],"ans");
+  return <div>hiii</div>;
 };
 const mapStateToProps = ({ question }) => {
   return {

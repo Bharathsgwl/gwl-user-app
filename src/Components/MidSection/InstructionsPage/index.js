@@ -8,9 +8,9 @@ import {
   Link
 } from "react-router-dom";
 import ExamSection from "../ExamSection";
-import Header from "../../Header";
+
 import { connect } from "react-redux";
-import { handleOnChange, onClickStart } from "../../../redux/actions";
+import { handleOnChange, onClickStart,getPosts } from "../../../redux/actions";
 import { withRouter } from "react-router-dom";
 import CardHeader from "@material-ui/core/CardHeader";
 import {
@@ -21,39 +21,83 @@ import {
   AppBar,
   IconButton
 } from "@material-ui/core";
-
+import axios from "axios";
 import CardActions from "@material-ui/core/CardActions";
 
-const InstructionsPage = props => {
-  console.log(props);
-  const { rule, handleOnChange, disabled, history, onClickStart } = props;
+class  InstructionsPage extends React.Component{
+  state={
+    examRule:[]
+  }
+  componentDidMount(){
+     axios.get("http://localhost:8080/api/exam_rules").then(response=>{
+       console.log(response.data,"abcv");
+       this.setRules(response.data.posts);
+     }).catch(err=>{console.log(err)})
+   }
+   setRules= examRule=>{
+     this.setState({examRule})
+     console.log(examRule);
+   }
+   // handleOnPostId=()=>{
+   //   let arr = [];
+   //   var { user, post, setStatesFromResponse,history } = this.props;
+   //   console.log(user,"user");
+   //   axios
+   //     .get("http://localhost:8080/api/candidate_post_maps", {
+   //       params: { user_id: user[0].uuid }
+   //     })
+   //     .then(response => {
+   //       arr = response.data.posts.map(po => po);
+   //       setStatesFromResponse("post", arr);
+   //     });
+   //   return this.props.onClickStart(history);
+   // };
 
+  // componentDidMount(){
+  //   debugger
+  //   this.props.getPosts();
+  //   debugger
+  // }
+
+// setTasks = taskList => {
+//   this.setState({ taskList });
+//   console.log(taskList,"tasks");
+// };
+
+  render(){
+    const {examRule}= this.state;
+  console.log(this.props,"instructions");
+  const { rule, handleOnChange, disabled, history, onClickStart,fetchPosts,data,user } = this.props;
+  var {rules}=this.props;
+  console.log(user,"user_name");
+rules=examRule;
+  console.log(rules,"rule");
+//   console.log(this.state.taskList[0],"rur=le");
+// console.log(this.state.taskList.map(task=> task.rule_name),"dhd");
+console.log(data,"rule");
+console.log(this.props.post,"post");
   return (
-
-    <Grid  justify content="center">
+    <Grid justify content="center">
       <Grid item md={12}>
         <AppBar position="static" style={{ background: "#009688" }}>
           <Toolbar>
-              <Typography
-                style={{ fontFamily: '"Apple Color Emoji"' }}
-                variant="h5"
-              >
-                GoodWorks Colloquio
-              </Typography>
+            <Typography
+              style={{ fontFamily: '"Apple Color Emoji"' }}
+              variant="h5"
+            >
+              GoodWorks Colloquio
+            </Typography>
           </Toolbar>
         </AppBar>
       </Grid>
-      <br></br>
-      <br></br>
-      <br></br>
-      <Grid container justify="center">
-        <Grid item md={6}>
+        <Grid item md={6} style={{margin:"auto"}}>
           <h1
             style={{
               textAlign: "center",
               fontFamily: "initial",
               color: "#009688",
-              paddingTop: "50px"
+              paddingTop: "50px",
+                  margin: "auto"
             }}
           >
             Instructions
@@ -67,19 +111,17 @@ const InstructionsPage = props => {
         </Grid>
         <Grid item sm={12}>
           <Card style={{ width: "70%", margin: "auto", height: "100%" }}>
-            {rule.map((r, index) => (
-              <ul>
-                <li key={index} classes={{ root: "instruction-line" }}>
-                  {r.rulename}
-                </li>
-              </ul>
-            ))}
+          {examRule.map((rule, index)=>{
+             return(
+               <ul key={index}>
+                 {(rule.priority==="high" || rule.priority==="High" )?<li><b>{rule.rule_name}</b></li>:<li>{rule.rule_name}</li>}
+               </ul>
+             )
+           })
+         }
           </Card>
         </Grid>
-        <br />
-        <br />
-        <br />
-        <br />
+
         <Grid item md={12} style={{ textAlign: "center" }}>
           <Checkbox
             style={{ color: "#009688" }}
@@ -87,28 +129,30 @@ const InstructionsPage = props => {
               handleOnChange("disabled", !e.target.checked);
             }}
           />
-          Agree and Continue,
+        Agree and Continue,
         </Grid>
-        <Grid item md={1}>
+        <Grid item md={12} style={{ textAlign: "center" }}>
           <Button
             variant="contained"
             color="primary"
             disabled={disabled}
             onClick={() => {
-              onClickStart(history);
+            onClickStart(history)
             }}
           >
             Start
           </Button>
         </Grid>
-      </Grid>
+
     </Grid>
   );
+}
 };
-const mapStateToProps = ({ disabled, rule }) => {
+const mapStateToProps = ({ disabled, rule,rules,user,post }) => {
+  console.log(rules,"mapStateToProps");
   return {
     disabled,
-    rule
+    rule,rules,user,post
   };
 };
 const mapDispatchToProps = dispatch => {

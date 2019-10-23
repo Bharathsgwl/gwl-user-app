@@ -4,5 +4,5 @@
   font-family: cursive !important;
 }
 .dialogActionstyle{
-  display: -webkit-inline-box !important;
+  justify-content: space-between !important;
 }

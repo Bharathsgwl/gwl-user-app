@@ -7,21 +7,65 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Paper,Card
+  Paper,
+  Card,
+  MenuItem
 } from "@material-ui/core";
 import Radio, { RadioProps } from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { withRouter } from "react-router-dom";
-import Dialogbox from "../../Dialogbox";
-
+import axios from "axios";
+import { connect } from "react-redux";
+import SnackBar from "../../SnackBar";
+import { handleOnTimerExpire } from "../../../redux/actions";
 class ExamSection extends React.Component {
   state = {
     hours: 0,
-    minutes: 50,
-    seconds: 20,
+    minutes: 0,
+    seconds: 0,
     timerStarted: true,
-    timerStopped: true
+    timerStopped: true,
+    text: "time",
+    questions: [],
+    answerList: [],
+    open: false
+  };
+
+  componentDidMount() {
+    var { post } = this.props;
+    axios
+      .get("http://localhost:8080/api/question_sections", {
+        params: { post_id: post[0].post_id }
+      })
+      .then(response => {
+        let time = response.data.questions.map(t => t.timer);
+        let times = time.reduce((a, b) => a + b, 0);
+
+        console.log(time, "tim");
+        this.setQuestions(times, response.data.questions);
+      })
+      .catch(err => console.log(err));
+  }
+
+  setQuestions = (times, questions) => {
+    let { hours = 0, minutes, seconds } = this.state;
+
+    if (times > 60) {
+      minutes = Math.floor(times / 60);
+      seconds = times % 60;
+    }
+    if (minutes > 60) {
+      hours = minutes / 60;
+      minutes %= 60;
+    }
+    console.log(hours, minutes, seconds, "timer");
+    this.setState({
+      hours,
+      minutes,
+      seconds,
+      questions
+    });
   };
 
   handleTimerStart() {
@@ -53,7 +97,8 @@ class ExamSection extends React.Component {
             this.state.seconds <= 0
           ) {
             clearInterval(this.timer);
-            alert("sesion expired");
+            // alert("sesion expired");
+            this.props.handleOnTimerExpire();
             this.handleTimerStop(this);
           }
         }
@@ -67,68 +112,120 @@ class ExamSection extends React.Component {
       timerStopped: true
     });
     clearInterval(this.timer);
+
     history.push("/user/logoutsection");
   }
   componentWillMount() {
-    console.log("this.handleTimerStart.bind(this)");
     this.handleTimerStart(this);
   }
+  handleOnClickSubmit = () => {
+    debugger;
+    var { open } = this.state;
+    var { post } = this.props;
+    open = true;
+    debugger;
+    this.setState({
+      open
+    });
+    debugger;
+    axios
+      .post("http://localhost:8080/api/candidate_answer", {
+        answerList: this.state.answerList,
+        user_id: post[0].uuid
+      })
+      .then(response => {
+        console.log(response, "candi");
+      });
+  };
+  handleOnClose = () => {
+    var { open } = this.state;
+    open = false;
+    debugger;
+    this.setState({
+      ...this.state,
+      open
+    });
+    debugger;
+    console.log(open, "open");
+  };
   render() {
-    const { hours, minutes, seconds, capture } = this.state;
+    const {
+      hours,
+      minutes,
+      seconds,
+      capture,
+      questions,
+      open,
+      answerList
+    } = this.state;
+    const { handleOnClickSubmit, handleOnClose } = this;
     return (
-      <Grid  justify content="center">
+      <div justify content="center" style={{ flexGrow: "1" }}>
         <AppBar
           position="static"
           classes={{ root: "examheadingcolor" }}
           color="#009688"
         >
           <Toolbar>
-            <Grid
-              container
-              justify
-              content="center"
-              classes={{ root: "ExamSectionscolor" }}
+            <Typography
+              style={{
+                fontFamily: '"Apple Color Emoji"',
+                flexGrow: "1"
+              }}
+              variant="h5"
             >
-              <Grid item md={10}>
-                <Typography
-                  style={{
-                    fontFamily: '"Apple Color Emoji"',
-                    verticalAlign: "center",
-                    paddingTop: "10px"
-                  }}
-                  variant="h5"
-                >
-                  ExamSection
-                </Typography>
-              </Grid>
-              <Grid item md={2}>
-                <Typography classes={{ root: "remainingtimecolor" }}>
-                  <i class="material-icons">timer</i>
-                  <b> {hours + ":" + minutes + ":" + seconds} </b>
-                </Typography>
-              </Grid>
+              ExamSection
+            </Typography>
+            <Grid>
+              <MenuItem style={{ paddingLeft: "28px", paddingTop: "20px" }}>
+                <i class="material-icons">timer</i>
+              </MenuItem>
+              <MenuItem>
+                {" "}
+                <b>{hours + ":" + minutes + ":" + seconds} </b>{" "}
+              </MenuItem>
             </Grid>
           </Toolbar>
         </AppBar>
-        < Grid item md={12} color="default">
-          <QuestionSection />
-        </Grid>
-      </Grid>
+        <QuestionSection
+          questions={questions}
+          answerList={this.state.answerList}
+          open={this.state.open}
+          handleOnClose={handleOnClose}
+          handleOnClickSubmit={this.handleOnClickSubmit}
+        />
+      </div>
     );
   }
 }
+const mapStateToProps = ({ q_lists, post }) => {
+  return {
+    q_lists,
+    post
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    handleOnTimerExpire: () => {
+      dispatch(handleOnTimerExpire());
+    }
+  };
+};
 
-export default withRouter(ExamSection);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(ExamSection));
 
 {
   /* <Grid item md={4} classes={{root:"display-timer"}}>
-          <Button variant="contained" color="secondary" onClick={this.handleOnOptioncapture.bind(this)}>capture Timer </Button>
-         </Grid>
-         <div className="timer-captures">
-       { this.state.capture.map((value, index) => {
-           return <p>{ "Capture " + ( index + 1 ) + " -- " + value }</p>
-       })}
-     </div> */
+            <Button variant="contained" color="secondary" onClick={this.handleOnOptioncapture.bind(this)}>capture Timer </Button>
+           </Grid>
+           <div className="timer-captures">
+         { this.state.capture.map((value, index) => {
+             return <p>{ "Capture " + ( index + 1 ) + " -- " + value }</p>
+         })}
+       </div> */
 }
 
 //   {question.map((q,index)=>(  <Paper key={index}>{q.options.map((o) => ( <RadioGroup value={this.state.value}> <FormControlLabel value={o} control={<Radio />} onChange={this.handleChange} label={o} style={{display:"inline-block"}}/></RadioGroup> ))}
@@ -209,7 +306,7 @@ export default withRouter(ExamSection);
 //   const {handleOnTimer}=this
 //   return(
 //     <div>
-//     <Header />
+//
 //     <Grid container>
 //
 //     <h3>This is the exam Section </h3>
