@@ -10,7 +10,7 @@ import {
 import ExamSection from "../ExamSection";
 
 import { connect } from "react-redux";
-import { handleOnChange, onClickStart,getPosts } from "../../../redux/actions";
+import { handleOnChange, onClickStart,setStatesFromResponse } from "../../../redux/actions";
 import { withRouter } from "react-router-dom";
 import CardHeader from "@material-ui/core/CardHeader";
 import {
@@ -28,16 +28,19 @@ class  InstructionsPage extends React.Component{
   state={
     examRule:[]
   }
-  componentDidMount(){
-     axios.get("http://localhost:8080/api/exam_rules").then(response=>{
-       console.log(response.data,"abcv");
-       this.setRules(response.data.posts);
-     }).catch(err=>{console.log(err)})
-   }
-   setRules= examRule=>{
-     this.setState({examRule})
-     console.log(examRule);
-   }
+  // componentDidMount(){
+  //   let arr=[];
+  //   var {setStatesFromResponse,exam_rules}=this.props;
+  //    axios.get("https://tranquil-wildwood-09825.herokuapp.com/api/exam_rules").then(response=>{
+  //      console.log(response.data,"abcv");
+  //      arr=response.data.exam_rules;
+  //      setStatesFromResponse("exam_rules",arr);
+  //    }).catch(err=>{console.log(err)})
+  //  }
+   // setRules= examRule=>{
+   //   this.setState({examRule})
+   //   console.log(examRule);
+   // }
    // handleOnPostId=()=>{
    //   let arr = [];
    //   var { user, post, setStatesFromResponse,history } = this.props;
@@ -67,9 +70,10 @@ class  InstructionsPage extends React.Component{
   render(){
     const {examRule}= this.state;
   console.log(this.props,"instructions");
-  const { rule, handleOnChange, disabled, history, onClickStart,fetchPosts,data,user } = this.props;
+  const { rule, handleOnChange, disabled, history, onClickStart,fetchPosts,data,user,exam_rules=[] } = this.props;
+  console.log(this.props.exam_rules,"rules");
   var {rules}=this.props;
-  console.log(user,"user_name");
+
 rules=examRule;
   console.log(rules,"rule");
 //   console.log(this.state.taskList[0],"rur=le");
@@ -111,7 +115,7 @@ console.log(this.props.post,"post");
         </Grid>
         <Grid item sm={12}>
           <Card style={{ width: "70%", margin: "auto", height: "100%" }}>
-          {examRule.map((rule, index)=>{
+          {this.props.exam_rules.map((rule, index)=>{
              return(
                <ul key={index}>
                  {(rule.priority==="high" || rule.priority==="High" )?<li><b>{rule.rule_name}</b></li>:<li>{rule.rule_name}</li>}
@@ -148,11 +152,11 @@ console.log(this.props.post,"post");
   );
 }
 };
-const mapStateToProps = ({ disabled, rule,rules,user,post }) => {
-  console.log(rules,"mapStateToProps");
+const mapStateToProps = ({ disabled,user,post,exam_rules }) => {
+
   return {
     disabled,
-    rule,rules,user,post
+    user,post,exam_rules
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -160,7 +164,10 @@ const mapDispatchToProps = dispatch => {
     handleOnChange: (property, value) => {
       dispatch(handleOnChange(property, value));
     },
-    onClickStart: history => dispatch(onClickStart(history))
+    onClickStart: history => dispatch(onClickStart(history)),
+    setStatesFromResponse:(attribute,val)=>{
+      dispatch(setStatesFromResponse(attribute,val));
+    }
   };
 };
 

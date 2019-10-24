@@ -112,7 +112,7 @@ class ExamSection extends React.Component {
       timerStopped: true
     });
     clearInterval(this.timer);
-
+return this.handleOnClickSubmit();
     history.push("/user/logoutsection");
   }
   componentWillMount() {
@@ -121,7 +121,7 @@ class ExamSection extends React.Component {
   handleOnClickSubmit = () => {
     debugger;
     var { open } = this.state;
-    var { post } = this.props;
+    var { post,user } = this.props;
     open = true;
     debugger;
     this.setState({
@@ -131,7 +131,7 @@ class ExamSection extends React.Component {
     axios
       .post("http://localhost:8080/api/candidate_answer", {
         answerList: this.state.answerList,
-        user_id: post[0].uuid
+        user_id: user[0].uuid
       })
       .then(response => {
         console.log(response, "candi");
@@ -159,6 +159,7 @@ class ExamSection extends React.Component {
       answerList
     } = this.state;
     const { handleOnClickSubmit, handleOnClose } = this;
+
     return (
       <div justify content="center" style={{ flexGrow: "1" }}>
         <AppBar
@@ -182,7 +183,7 @@ class ExamSection extends React.Component {
               </MenuItem>
               <MenuItem>
                 {" "}
-                <b>{hours + ":" + minutes + ":" + seconds} </b>{" "}
+                <b>{hours + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2)} </b>{" "}
               </MenuItem>
             </Grid>
           </Toolbar>
@@ -198,10 +199,10 @@ class ExamSection extends React.Component {
     );
   }
 }
-const mapStateToProps = ({ q_lists, post }) => {
+const mapStateToProps = ({ q_lists, post ,user,exam_rules}) => {
   return {
     q_lists,
-    post
+    post,exam_rules,user
   };
 };
 const mapDispatchToProps = dispatch => {

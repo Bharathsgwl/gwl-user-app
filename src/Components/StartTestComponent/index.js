@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, MenuItem } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
@@ -7,7 +7,7 @@ import { setStatesFromResponse } from "../../redux/actions";
 class StartTestComponent extends React.Component {
   handleOnCandidatePostMap = () => {
     let arr = [];
-    var { user, post, setStatesFromResponse,history } = this.props;
+    var { user, post, setStatesFromResponse, history } = this.props;
     axios
       .get("http://localhost:8080/api/candidate_post_maps", {
         params: { user_id: user[0].uuid }
@@ -18,14 +18,14 @@ class StartTestComponent extends React.Component {
       });
     history.push("/user/InstructionsPage");
   };
-  enterTest = (history) => {
+  enterTest = history => {
     history.push("/user/InstructionsPage");
   };
   render() {
     console.log(this.props.user, "user");
     return (
       <div>
-        <AppBar>
+        <AppBar style={{ background: "#009688" }}>
           <Toolbar>
             <Typography
               style={{
@@ -36,9 +36,9 @@ class StartTestComponent extends React.Component {
             >
               GoodWorks Colloquio
             </Typography>
-            <Button onClick={history => this.handleOnCandidatePostMap()}>
+            <MenuItem onClick={history => this.handleOnCandidatePostMap()}>
               Start Test
-            </Button>
+            </MenuItem>
           </Toolbar>
         </AppBar>
       </div>

@@ -13,13 +13,15 @@ const applicationIntialState = {
   user_detail:{
     user_name:'',uuid:''
   },
+  questions:[],
+  time:0,
 
   index: 0,
   capture: [],
   q_lists:[
     {q_id:{},value:''}
   ],
-  rules:[],
+  exam_rules:[],
   length: 2,
   message: "",
   login: {
@@ -37,31 +39,31 @@ const reducer = (state = applicationIntialState, action) => {
         ...state,
         [property]: value
       };
-      case actionTypes.ON_CLICK_LOGIN:
-        var history = action.payload.history;
-        debugger
-        var snackBar = state;
-        debugger
-        var {snackbarOpen} = state.snackBar;
-        const { username, password } = state.login;
-        var message = state.message;
-        debugger
-        snackbarOpen = !snackbarOpen;
-        debugger;
-        username === "GWL" && password === "123"
-          ? history.push("/user/InstructionsPage")
-          : username == "" && password == ""
-          ? (message = "Enter Credentials")
-          : (message = "Invalid Credentials");
-        debugger;
-        return {
-          ...state,
-          message,
-          open,
-          username,
-          password,
-          snackbarOpen
-        };
+      // case actionTypes.ON_CLICK_LOGIN:
+      //   var history = action.payload.history;
+      //   debugger
+      //   var snackBar = state;
+      //   debugger
+      //   var {snackbarOpen} = state.snackBar;
+      //   const { username, password } = state.login;
+      //   var message = state.message;
+      //   debugger
+      //   snackbarOpen = !snackbarOpen;
+      //   debugger;
+      //   username === "GWL" && password === "123"
+      //     ? history.push("/user/InstructionsPage")
+      //     : username == "" && password == ""
+      //     ? (message = "Enter Credentials")
+      //     : (message = "Invalid Credentials");
+      //   debugger;
+      //   return {
+      //     ...state,
+      //     message,
+      //     open,
+      //     username,
+      //     password,
+      //     snackbarOpen
+      //   };
 
     case actionTypes.HANDLE_FIELD_CHANGE:
       const { property1, value1, propertyObject } = action.payload;
@@ -214,9 +216,9 @@ const reducer = (state = applicationIntialState, action) => {
       };
 
       case actionTypes.SET_STATES_FROM_RESPONSE:
-      var {user}=state;
+      var {user,exam_rules}=state;
       var {attribute,val}=action.payload;
-      console.log(user,"user");
+      console.log(user,exam_rules,"user");
       return{
         ...state,
         [attribute]:val

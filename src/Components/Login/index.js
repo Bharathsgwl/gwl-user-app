@@ -34,9 +34,10 @@ class Login extends React.Component {
       message,
       history,
       handleOnSnackBarClose,
-      setStatesFromResponse,user
+      setStatesFromResponse,
+      user
     } = this.props;
-  console.log(user);
+    console.log(user);
     debugger;
     if (login.username == "" && login.password == "") {
       msg = "Enter Credentials";
@@ -46,8 +47,7 @@ class Login extends React.Component {
       msg = "Credentials too short";
       setStatesFromResponse("message", msg);
       handleOnSnackBarClose();
-    }
-     else {
+    } else {
       axios
         .post(`https://evening-dawn-93464.herokuapp.com/api/login`, {
           user_name: login.username,
@@ -59,9 +59,11 @@ class Login extends React.Component {
             arr = response.data.all.map(d => d);
             console.log(arr, "array");
             setStatesFromResponse("user", arr);
-            history.push("/user/StartTestComponent");
+
+            console.log(user, "user");
+            return this.handleOnUserCheck();
           } else {
-             msg = "invalid-user/password";
+            msg = "invalid-user/password";
             setStatesFromResponse("message", msg);
             handleOnSnackBarClose();
           }
@@ -69,6 +71,62 @@ class Login extends React.Component {
         })
         .catch(err => console.log(err, "eer"));
     }
+
+    return this.handleOnInstruction();
+  };
+  
+  handleOnUserCheck = () => {
+    var { user, setStatesFromResponse, message, snackbarOpen } = this.props;
+    console.log(user, "user111");
+    axios
+      .post("http://localhost:8080/api/user_checking", {
+        user_id: user[0].uuid
+      })
+      .then(response => {
+        console.log(response, "resposne");
+        debugger;
+        if (response.data.name === "User exist") {
+          let msg = "user exist";
+          this.props.setStatesFromResponse("message", msg);
+          this.props.handleOnSnackBarClose();
+          debugger;
+        } else {
+          return this.handleOnCandidatePostMap();
+        }
+        debugger;
+      });
+  };
+  handleOnCandidatePostMap = () => {
+    let arr = [];
+    var { user, post, setStatesFromResponse, history } = this.props;
+    console.log(this.props.user, "user is coming");
+    axios
+      .get("http://localhost:8080/api/candidate_post_maps", {
+        params: { user_id: user[0].uuid }
+      })
+      .then(response => {
+        console.log(response.rows, "rows");
+        arr = response.data.posts.map(po => po);
+        setStatesFromResponse("post", arr);
+      });
+    history.push("/user/InstructionsPage");
+  };
+
+  handleOnInstruction = () => {
+    let arr = [];
+
+    var { setStatesFromResponse, exam_rules } = this.props;
+    axios
+      .get("http://localhost:8080/api/exam_rules")
+      .then(response => {
+        console.log(response.data, "abcv");
+        arr = response.data.exam_rules;
+        setStatesFromResponse("exam_rules", arr);
+        console.log(arr, "arra");
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -152,11 +210,13 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { message, snackBarOpen, login,user } = state;
+  const { message, snackBarOpen, login, user, exam_rules } = state;
   return {
     message,
     snackBarOpen,
-    login,user
+    login,
+    user,
+    exam_rules
   };
 };
 const mapDispatchToProps = dispatch => {
