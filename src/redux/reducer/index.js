@@ -8,6 +8,7 @@ const applicationIntialState = {
   snackBar: {
     snackbarOpen: false
   },
+  sessionDetail:{},redirect:true,
   post:[],
   user:[],
   user_detail:{

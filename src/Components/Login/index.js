@@ -21,8 +21,9 @@ import {
   setStatesFromResponse
 } from "../../redux/actions";
 import * as actionTypes from "../../redux/actionTypes";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import axios from "axios";
+
 class Login extends React.Component {
   onClickLogin = () => {
     let arr = [];
@@ -59,7 +60,13 @@ class Login extends React.Component {
             arr = response.data.all.map(d => d);
             console.log(arr, "array");
             setStatesFromResponse("user", arr);
-
+            //
+            // sessionStorage.setItem("token", "true");
+            this.setSessionHandler(
+              response.data.all[0],
+              true,
+              response.data.auth_token
+            );
             console.log(user, "user");
             return this.handleOnUserCheck();
           } else {
@@ -67,17 +74,36 @@ class Login extends React.Component {
             setStatesFromResponse("message", msg);
             handleOnSnackBarClose();
           }
-          console.log(arr, "user list ");
+
         })
-        .catch(err => console.log(err, "eer"));
+        .catch(err => console.log(err, "err"));
     }
 
     return this.handleOnInstruction();
   };
-  
+  setSessionHandler = (sessionDetails, flag, auth) => {
+    var {sessionDetail,redirect}=this.props;
+    debugger;
+    let details = {};
+    sessionStorage.setItem("sessionId", sessionDetails.uuid);
+    sessionStorage.setItem("name", sessionDetails.user_name);
+    sessionStorage.setItem("auth_token", auth);
+    // details = sessionDetails;
+    //
+    // debugger;
+    // console.log(details, "details");
+    debugger;
+    setStatesFromResponse("sessionDetail", sessionDetails);
+    let red_direct = false;
+    red_direct = flag;
+    setStatesFromResponse("redirect", red_direct);
+    // setStatesFromResponse("sessionDetails", sessionFlag);
+  };
+
   handleOnUserCheck = () => {
-    var { user, setStatesFromResponse, message, snackbarOpen } = this.props;
+    var { user, setStatesFromResponse, message, snackbarOpen,redirect,sessionDetails } = this.props;
     console.log(user, "user111");
+    console.log(sessionDetails,"session");
     axios
       .post("http://localhost:8080/api/user_checking", {
         user_id: user[0].uuid
@@ -110,6 +136,14 @@ class Login extends React.Component {
         setStatesFromResponse("post", arr);
       });
     history.push("/user/InstructionsPage");
+    // let data = sessionStorage.getItem("token");
+    // console.log(data, "data");
+    debugger;
+    // if (data) {
+    //   console.log(data, "data");
+    //   // return <Redirect to="/user/InstructionsPage" />;
+    // }
+    // return data ? <Redirect to="/user/InstructionsPage" /> : "";
   };
 
   handleOnInstruction = () => {
@@ -131,10 +165,12 @@ class Login extends React.Component {
 
   render() {
     console.log(this.props);
-    const { history, handleFieldChange, login } = this.props;
+    const { history, handleFieldChange, login,redirect,sessionDetail} = this.props;
     const { onClickLogin } = this;
+    console.log(this.props,"this.props");
     console.log(onClickLogin, "log");
     debugger;
+
     return (
       <React.Fragment>
         <Grid container>
@@ -210,13 +246,13 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { message, snackBarOpen, login, user, exam_rules } = state;
+  const { message, snackBarOpen, login, user, exam_rules,redirect,sessionDetail } = state;
   return {
     message,
     snackBarOpen,
     login,
     user,
-    exam_rules
+    exam_rules,redirect,sessionDetail
   };
 };
 const mapDispatchToProps = dispatch => {
