@@ -10,9 +10,14 @@ import {
 import ExamSection from "../ExamSection";
 
 import { connect } from "react-redux";
-import { handleOnChange, onClickStart,setStatesFromResponse } from "../../../redux/actions";
-import { withRouter } from "react-router-dom";
+import {
+  handleOnChange,
+  onClickStart,
+  setStatesFromResponse,handleOnSnackBarClose
+} from "../../../redux/actions";
+import { withRouter, Redirect } from "react-router-dom";
 import CardHeader from "@material-ui/core/CardHeader";
+
 import {
   Card,
   CardContent,
@@ -21,87 +26,97 @@ import {
   AppBar,
   IconButton
 } from "@material-ui/core";
+
 import axios from "axios";
 import CardActions from "@material-ui/core/CardActions";
 
-class  InstructionsPage extends React.Component{
-  state={
-    examRule:[]
+class InstructionsPage extends React.Component {
+  state = {
+    examRule: [],
+    redirect: false
+  };
+  componentDidMount() {
+    this.validateUser();
+    this.varifyUser();
   }
-  // componentDidMount(){
-  //   let arr=[];
-  //   var {setStatesFromResponse,exam_rules}=this.props;
-  //    axios.get("https://tranquil-wildwood-09825.herokuapp.com/api/exam_rules").then(response=>{
-  //      console.log(response.data,"abcv");
-  //      arr=response.data.exam_rules;
-  //      setStatesFromResponse("exam_rules",arr);
-  //    }).catch(err=>{console.log(err)})
-  //  }
-   // setRules= examRule=>{
-   //   this.setState({examRule})
-   //   console.log(examRule);
-   // }
-   // handleOnPostId=()=>{
-   //   let arr = [];
-   //   var { user, post, setStatesFromResponse,history } = this.props;
-   //   console.log(user,"user");
-   //   axios
-   //     .get("http://localhost:8080/api/candidate_post_maps", {
-   //       params: { user_id: user[0].uuid }
-   //     })
-   //     .then(response => {
-   //       arr = response.data.posts.map(po => po);
-   //       setStatesFromResponse("post", arr);
-   //     });
-   //   return this.props.onClickStart(history);
-   // };
+  validateUser = () => {
+    axios
+      .post(`https://evening-dawn-93464.herokuapp.com/api/verify`, {
+        auth_token: sessionStorage.getItem("auth_token")
+      })
+      .then(response => {
+        if (!response.data.isloggedIn) {
+          this.setState({ redirect: true });
+        }
+      })
+      .catch(error => console.log(error, "error"));
+    let msg = "user is not authorised";
+    this.props.setStatesFromResponse("message", msg);
+    this.props.handleOnSnackBarClose();
+  };
+  varifyUser = () => {
+    axios
+      .post(`https://evening-dawn-93464.herokuapp.com/api/validate`, {
+        auth_token: sessionStorage.getItem("serverAUTHTOKEN")
+      })
+      .then(response => {
+        let status = response.data.status;
+        if (status === 401) {
+          this.setState({ redirect: true });
+        }
+      })
+      .catch(error => console.log(error));
+  };
+  handleOnCLickStart = () => {
+    var { history } = this.props;
+    this.validateUser();
+    this.varifyUser();
+    this.props.onClickStart(history);
+  };
 
-  // componentDidMount(){
-  //   debugger
-  //   this.props.getPosts();
-  //   debugger
-  // }
+  render() {
+    const { examRule } = this.state;
+    console.log(this.props, "instructions");
+    const {
+      rule,
+      handleOnChange,
+      disabled,
+      history,
+      onClickStart,
+      fetchPosts,
+      data,
+      user,
+      exam_rules = [],
+      handleOnCLickStart
+    } = this.props;
 
-// setTasks = taskList => {
-//   this.setState({ taskList });
-//   console.log(taskList,"tasks");
-// };
+    var { rules } = this.props;
 
-  render(){
-    const {examRule}= this.state;
-  console.log(this.props,"instructions");
-  const { rule, handleOnChange, disabled, history, onClickStart,fetchPosts,data,user,exam_rules=[] } = this.props;
-  console.log(this.props.exam_rules,"rules");
-  var {rules}=this.props;
+    rules = examRule;
 
-rules=examRule;
-  console.log(rules,"rule");
-//   console.log(this.state.taskList[0],"rur=le");
-// console.log(this.state.taskList.map(task=> task.rule_name),"dhd");
-console.log(data,"rule");
-console.log(this.props.post,"post");
-  return (
-    <Grid justify content="center">
-      <Grid item md={12}>
-        <AppBar position="static" style={{ background: "#009688" }}>
-          <Toolbar>
-            <Typography
-              style={{ fontFamily: '"Apple Color Emoji"' }}
-              variant="h5"
-            >
-              GoodWorks Colloquio
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Grid>
-        <Grid item md={6} style={{margin:"auto"}}>
+    return (
+      <Grid justify content="center">
+        {this.state.redirect ? <Redirect to="/user/InstructionsPage" /> : null}
+        <Grid item md={12}>
+          <AppBar position="static" style={{ background: "#009688" }}>
+            <Toolbar>
+              <Typography
+                style={{ fontFamily: '"Apple Color Emoji"' }}
+                variant="h5"
+              >
+                GoodWorks Colloquio
+              </Typography>
+            </Toolbar>
+          </AppBar>
+        </Grid>
+        <Grid item md={6} style={{ margin: "auto" }}>
           <h1
             style={{
               textAlign: "center",
               fontFamily: "initial",
               color: "#009688",
               paddingTop: "50px",
-                  margin: "auto"
+              margin: "auto"
             }}
           >
             Instructions
@@ -115,14 +130,19 @@ console.log(this.props.post,"post");
         </Grid>
         <Grid item sm={12}>
           <Card style={{ width: "70%", margin: "auto", height: "100%" }}>
-          {this.props.exam_rules.map((rule, index)=>{
-             return(
-               <ul key={index}>
-                 {(rule.priority==="high" || rule.priority==="High" )?<li><b>{rule.rule_name}</b></li>:<li>{rule.rule_name}</li>}
-               </ul>
-             )
-           })
-         }
+            {this.props.exam_rules.map((rule, index) => {
+              return (
+                <ul key={index}>
+                  {rule.priority === "high" || rule.priority === "High" ? (
+                    <li>
+                      <b>{rule.rule_name}</b>
+                    </li>
+                  ) : (
+                    <li>{rule.rule_name}</li>
+                  )}
+                </ul>
+              );
+            })}
           </Card>
         </Grid>
 
@@ -133,7 +153,7 @@ console.log(this.props.post,"post");
               handleOnChange("disabled", !e.target.checked);
             }}
           />
-        Agree and Continue,
+          Agree and Continue,
         </Grid>
         <Grid item md={12} style={{ textAlign: "center" }}>
           <Button
@@ -141,22 +161,31 @@ console.log(this.props.post,"post");
             color="primary"
             disabled={disabled}
             onClick={() => {
-            onClickStart(history)
+              this.handleOnCLickStart();
             }}
           >
             Start
           </Button>
         </Grid>
-
-    </Grid>
-  );
+      </Grid>
+    );
+  }
 }
-};
-const mapStateToProps = ({ disabled,user,post,exam_rules }) => {
-
+const mapStateToProps = ({
+  disabled,
+  user,
+  post,
+  exam_rules,
+  sessionDetaill,
+  redirectt
+}) => {
   return {
     disabled,
-    user,post,exam_rules
+    user,
+    post,
+    exam_rules,
+    sessionDetaill,
+    redirectt
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -165,9 +194,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(handleOnChange(property, value));
     },
     onClickStart: history => dispatch(onClickStart(history)),
-    setStatesFromResponse:(attribute,val)=>{
-      dispatch(setStatesFromResponse(attribute,val));
-    }
+    setStatesFromResponse: (attribute, val) => {
+      dispatch(setStatesFromResponse(attribute, val));
+    },
+    handleOnSnackBarClose: () => dispatch(handleOnSnackBarClose())
   };
 };
 

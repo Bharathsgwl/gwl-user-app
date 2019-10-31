@@ -25,6 +25,11 @@ import { withRouter, Redirect } from "react-router-dom";
 import axios from "axios";
 
 class Login extends React.Component {
+  state = {
+    sessionDetail: {},
+    redirect: false,
+    token1: ""
+  };
   onClickLogin = () => {
     let arr = [];
     let msg = "";
@@ -60,52 +65,44 @@ class Login extends React.Component {
             arr = response.data.all.map(d => d);
             console.log(arr, "array");
             setStatesFromResponse("user", arr);
-            //
-            // sessionStorage.setItem("token", "true");
-            this.setSessionHandler(
-              response.data.all[0],
-              true,
-              response.data.auth_token
-            );
-            console.log(user, "user");
-            return this.handleOnUserCheck();
+            this.state.token1 = response.data.auth_token;
+
+            this.handleOnUserCheck();
           } else {
+            console.log(user, "use");
             msg = "invalid-user/password";
             setStatesFromResponse("message", msg);
             handleOnSnackBarClose();
           }
-
         })
         .catch(err => console.log(err, "err"));
+      this.handleOnInstruction();
     }
-
-    return this.handleOnInstruction();
   };
   setSessionHandler = (sessionDetails, flag, auth) => {
-    var {sessionDetail,redirect}=this.props;
+    var { sessionDetail, redirect } = this.state;
+    redirect = flag;
     debugger;
     let details = {};
+
     sessionStorage.setItem("sessionId", sessionDetails.uuid);
     sessionStorage.setItem("name", sessionDetails.user_name);
     sessionStorage.setItem("auth_token", auth);
-    // details = sessionDetails;
-    //
-    // debugger;
-    // console.log(details, "details");
-    debugger;
-    setStatesFromResponse("sessionDetail", sessionDetails);
-    let red_direct = false;
-    red_direct = flag;
-    setStatesFromResponse("redirect", red_direct);
-    // setStatesFromResponse("sessionDetails", sessionFlag);
+
+    this.setState({
+      sessionDetail: sessionDetails,
+      auth_token: auth,
+      redirect: flag
+    });
+    this.handleOnCandidatePostMap();
   };
 
   handleOnUserCheck = () => {
-    var { user, setStatesFromResponse, message, snackbarOpen,redirect,sessionDetails } = this.props;
-    console.log(user, "user111");
-    console.log(sessionDetails,"session");
+    var { user, setStatesFromResponse, message, snackbarOpen } = this.props;
+    var { redirect, sessionDetail, token1 } = this.state;
+    console.log(token1, "token1");
     axios
-      .post("http://localhost:8080/api/user_checking", {
+      .post("https://pure-wave-01085.herokuapp.com/api/user_checking", {
         user_id: user[0].uuid
       })
       .then(response => {
@@ -117,7 +114,7 @@ class Login extends React.Component {
           this.props.handleOnSnackBarClose();
           debugger;
         } else {
-          return this.handleOnCandidatePostMap();
+          this.setSessionHandler(user[0], true, token1);
         }
         debugger;
       });
@@ -125,25 +122,20 @@ class Login extends React.Component {
   handleOnCandidatePostMap = () => {
     let arr = [];
     var { user, post, setStatesFromResponse, history } = this.props;
-    console.log(this.props.user, "user is coming");
+    console.log(this.props.user[0].uuid, "user is coming");
+
     axios
-      .get("http://localhost:8080/api/candidate_post_maps", {
-        params: { user_id: user[0].uuid }
+      .get("https://pure-wave-01085.herokuapp.com/api/candidate_post_maps", {
+        params: {
+          user_id: this.props.user[0].uuid
+        }
       })
       .then(response => {
         console.log(response.rows, "rows");
         arr = response.data.posts.map(po => po);
         setStatesFromResponse("post", arr);
       });
-    history.push("/user/InstructionsPage");
-    // let data = sessionStorage.getItem("token");
-    // console.log(data, "data");
-    debugger;
-    // if (data) {
-    //   console.log(data, "data");
-    //   // return <Redirect to="/user/InstructionsPage" />;
-    // }
-    // return data ? <Redirect to="/user/InstructionsPage" /> : "";
+    return this.handleOnInstruction();
   };
 
   handleOnInstruction = () => {
@@ -151,12 +143,11 @@ class Login extends React.Component {
 
     var { setStatesFromResponse, exam_rules } = this.props;
     axios
-      .get("http://localhost:8080/api/exam_rules")
+      .get("https://pure-wave-01085.herokuapp.com/api/exam_rules")
       .then(response => {
         console.log(response.data, "abcv");
         arr = response.data.exam_rules;
         setStatesFromResponse("exam_rules", arr);
-        console.log(arr, "arra");
       })
       .catch(err => {
         console.log(err);
@@ -165,15 +156,17 @@ class Login extends React.Component {
 
   render() {
     console.log(this.props);
-    const { history, handleFieldChange, login,redirect,sessionDetail} = this.props;
+    const { history, handleFieldChange, login } = this.props;
     const { onClickLogin } = this;
-    console.log(this.props,"this.props");
-    console.log(onClickLogin, "log");
-    debugger;
+    var { redirect, sessionDetail } = this.state;
+    console.log(this.state, "state");
 
     return (
       <React.Fragment>
         <Grid container>
+          {this.state.redirect ? (
+            <Redirect to="/user/InstructionsPage" />
+          ) : null}
           <AppBar position="static" style={{ background: "#009688" }}>
             <Toolbar>
               <Grid item md={12}>
@@ -246,13 +239,23 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { message, snackBarOpen, login, user, exam_rules,redirect,sessionDetail } = state;
+  const {
+    message,
+    snackBarOpen,
+    login,
+    user,
+    exam_rules,
+    sessionDetaill,
+    rdirectt
+  } = state;
   return {
     message,
     snackBarOpen,
     login,
     user,
-    exam_rules,redirect,sessionDetail
+    exam_rules,
+    sessionDetaill,
+    rdirectt
   };
 };
 const mapDispatchToProps = dispatch => {

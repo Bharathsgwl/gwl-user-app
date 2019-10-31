@@ -8,9 +8,9 @@ const applicationIntialState = {
   snackBar: {
     snackbarOpen: false
   },
-  sessionDetail:{},redirect:true,
   post:[],
   user:[],
+  token:'',
   user_detail:{
     user_name:'',uuid:''
   },
@@ -40,31 +40,7 @@ const reducer = (state = applicationIntialState, action) => {
         ...state,
         [property]: value
       };
-      // case actionTypes.ON_CLICK_LOGIN:
-      //   var history = action.payload.history;
-      //   debugger
-      //   var snackBar = state;
-      //   debugger
-      //   var {snackbarOpen} = state.snackBar;
-      //   const { username, password } = state.login;
-      //   var message = state.message;
-      //   debugger
-      //   snackbarOpen = !snackbarOpen;
-      //   debugger;
-      //   username === "GWL" && password === "123"
-      //     ? history.push("/user/InstructionsPage")
-      //     : username == "" && password == ""
-      //     ? (message = "Enter Credentials")
-      //     : (message = "Invalid Credentials");
-      //   debugger;
-      //   return {
-      //     ...state,
-      //     message,
-      //     open,
-      //     username,
-      //     password,
-      //     snackbarOpen
-      //   };
+
 
     case actionTypes.HANDLE_FIELD_CHANGE:
       const { property1, value1, propertyObject } = action.payload;
@@ -161,7 +137,7 @@ const reducer = (state = applicationIntialState, action) => {
     case actionTypes.HANDLE_ON_CLICK_SUBMIT:
       var { open } = state;
       open = !open;
-      axios.post("http://localhost:8080/api/candidate_answer").then(response => {
+      axios.post("https://pure-wave-01085.herokuapp.com/api/candidate_answer").then(response => {
         console.log(response, "candi");
       });
       debugger;
@@ -172,9 +148,6 @@ const reducer = (state = applicationIntialState, action) => {
       case actionTypes.HANDLE_ON_TIMER_EXPIRE:
         var { snackbarOpen} = state;
         snackbarOpen=!snackbarOpen
-        axios.get("http://localhost:8080/api/candidate_answer").then(response => {
-          console.log(response, "candi");
-        });
         debugger;
         return {
           ...state,snackbarOpen

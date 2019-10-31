@@ -26,7 +26,7 @@ const Dialogbox = props => {
     open,
     handleOnClose,
     history,
-    handleOnClickOk,
+    handleOnClickOkAns,
     maxWidth,
     fullWidth
   } = props;
@@ -62,7 +62,7 @@ const Dialogbox = props => {
           color="primary"
           style={{ fontFamily: '"Apple Color Emoji"' }}
           onClick={() => {
-            handleOnClickOk(history);
+            handleOnClickOkAns(history);
           }}
         >
           Ok

@@ -106,7 +106,7 @@ class QuestionSection extends React.Component {
     });
     debugger;
     axios
-      .post("http://localhost:8080/api/candidate_answer", {
+      .post("https://pure-wave-01085.herokuapp.com/api/candidate_answer", {
         answerList: this.state.answerList,
         user_id: post[0].uuid
       })
@@ -128,7 +128,7 @@ class QuestionSection extends React.Component {
       questions = [],
       handleOnClickSubmit,
       open,
-      answerList
+      answerList,handleOnClickOkAns
     } = this.props;
     console.log(questions, "q");
     const {
@@ -206,7 +206,7 @@ class QuestionSection extends React.Component {
             <Dialogbox
               text={this.state.text}
               open={this.props.open}
-              handleOnClose={this.props.handleOnClose}
+              handleOnClose={this.props.handleOnClose} handleOnClickOkAns={handleOnClickOkAns}
             />
             <Button
               color="primary"
