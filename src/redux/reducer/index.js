@@ -1,34 +1,84 @@
 import * as actionTypes from "../actionTypes";
-import axios from "axios";
 const applicationIntialState = {
   disabled: true,
   disabled2: false,
   disabled3: true,
   open: false,
-  snackBar: {
-    snackbarOpen: false
-  },
-  post:[],
-  user:[],
-  token:'',
-  user_detail:{
-    user_name:'',uuid:''
-  },
-  questions:[],
-  time:0,
-
+    snackbarOpen: false,
+    questionList:[],
+  rule: [
+    {
+      rulename:
+        "This test contains only Aptitude Section,This test contains following sections are Quantitative and Logical Reasoning."
+    },
+    {
+      rulename:
+        "Quantitative Aptitude  section consists of maths questions from the topics like algebra, time & work, time, speed & distance, arithmetic."
+    },
+    {
+      rulename:
+        "Logical Reasoning Aptitude section consists of reasoning based questions from common topics of reasoning skills."
+    },
+    {
+      rulename:
+        "If You tried to open another window the session will expire automaticaly and it will considerd as a mall practice."
+    }
+  ],
   index: 0,
   capture: [],
-  q_lists:[
-    {q_id:{},value:''}
+  questions:[],
+  question: [
+    {
+      questionname:"A train running at the speed of 60 km/hr crosses a pole in 9 seconds. What is the length of the train?",
+      options: ["120 mtres", "180 metres", "324 metres", "150 metres "],
+      correctvalue: "150 meters",
+      value: ""
+    },
+    {
+      questionname:
+        "The length of the bridge, which a train 130 metres long and travelling at 45 km/hr can cross in 30 seconds, is:",
+      options: ["200 m", "225 m", "245 m", "250 m"],
+      correctvalue: "245 mm",
+      value: ""
+    },
+    {
+      questionname:
+        "	Two trains running in opposite directions cross a man standing on the platform in 27 seconds and 17 seconds respectively and they cross each other in 23 seconds. The ratio of their speeds is:",
+      options: ["1:3", "3:2", "3:4", "None of these"],
+      correctvalue: "3:2",
+      value: ""
+    },
+    {
+      questionname:
+        "A train 125 m long passes a man, running at 5 km/hr in the same direction in which the train is going, in 10 seconds. The speed of the train is:",
+      options: ["45 km/hr", "50 km/hr ", "54 km/hr ", "55 km/hr  "],
+      correctvalue: "50 km/h",
+      value: ""
+    },
+    {
+      questionname:
+        "A sum of money at simple interest amounts to Rs. 815 in 3 years and to Rs. 854 in 4 years. The sum is:",
+      options: ["650", "690 ", "698 ", "700  "],
+      correctvalue: "698",
+      value: ""
+    },
+    {
+      questionname:
+        "Mr. Thomas invested an amount of Rs. 13,900 divided in two different schemes A and B at the simple interest rate of 14% p.a. and 11% p.a. respectively. If the total amount of simple interest earned in 2 years be Rs. 3508, what was the amount invested in Scheme B?",
+      options: ["6400", "6500 ", "7200 ", "7500  "],
+      correctvalue: "6400",
+      value: ""
+    }
   ],
-  exam_rules:[],
   length: 2,
   message: "",
   login: {
     username: "",
     password: ""
-  }
+  },
+  fullWidth: false,
+    maxWidth: 'xl',
+    isStopped: false, isPaused: false,height:0,width:0
 };
 
 const reducer = (state = applicationIntialState, action) => {
@@ -40,7 +90,28 @@ const reducer = (state = applicationIntialState, action) => {
         ...state,
         [property]: value
       };
+    case actionTypes.ON_CLICK_LOGIN:
+      var history = action.payload.history;
+      var {snackbarOpen} = state;
+      const { username, password } = state.login;
+      var message = state.message;
+snackbarOpen = !snackbarOpen;
+      debugger;
+      username === "GWL" && password === "123"
+        ? history.push("/user/InstructionsPage")
+        : username == "" && password == ""
+        ? (message = "Enter Credentials")
+        : (message = "Invalid Credentials");
 
+      debugger;
+      return {
+        ...state,
+        message,
+        open,
+        username,
+        password,
+        snackbarOpen
+      };
 
     case actionTypes.HANDLE_FIELD_CHANGE:
       const { property1, value1, propertyObject } = action.payload;
@@ -70,7 +141,7 @@ const reducer = (state = applicationIntialState, action) => {
       var { capture } = state.capture;
       debugger;
       var { question } = state;
-      question[index].value = e;
+        question[index].value = e;
       capture = question[index].value;
 
       debugger;
@@ -90,7 +161,7 @@ const reducer = (state = applicationIntialState, action) => {
         capture
       } = state;
       var value = state.question.value;
-      var history = action.payload.history;
+      // var history = action.payload.history;
       index = index + 1;
       debugger;
       for (var i = 1; i < question.length; i++) {
@@ -136,23 +207,13 @@ const reducer = (state = applicationIntialState, action) => {
       };
     case actionTypes.HANDLE_ON_CLICK_SUBMIT:
       var { open } = state;
+      debugger;
       open = !open;
-      axios.post("https://pure-wave-01085.herokuapp.com/api/candidate_answer").then(response => {
-        console.log(response, "candi");
-      });
       debugger;
       return {
         ...state,
         open
       };
-      case actionTypes.HANDLE_ON_TIMER_EXPIRE:
-        var { snackbarOpen} = state;
-        snackbarOpen=!snackbarOpen
-        debugger;
-        return {
-          ...state,snackbarOpen
-        };
-
 
     case actionTypes.HANDLE_ON_CLOSE:
       var { open } = state;
@@ -164,7 +225,7 @@ const reducer = (state = applicationIntialState, action) => {
         open
       };
     case actionTypes.HANDLE_ON_SNACKBAR_CLOSE:
-      var { snackBar } = state;
+
       var { snackbarOpen } = state;
       debugger;
       snackbarOpen = !snackbarOpen;
@@ -182,21 +243,27 @@ const reducer = (state = applicationIntialState, action) => {
         history
       };
     case actionTypes.HANDLE_ON_LOGOUT:
+    var snackbarOpen=state;
       var history = action.payload.history;
       history.push("/");
+      snackbarOpen=false;
+;
       return {
-        ...state,
-        history
+        ...state,snackbarOpen,
+        history,
+        login:{
+          username:"",password:"",snackbarOpen:false
+        }
       };
-
-      case actionTypes.SET_STATES_FROM_RESPONSE:
-      var {user,exam_rules}=state;
-      var {attribute,val}=action.payload;
-      console.log(user,exam_rules,"user");
-      return{
-        ...state,
-        [attribute]:val
-      }
+      case 'FETCH_CONTACTS_FULFILLED': {
+        var questionList=state;
+     return {
+       ...state,
+       questionList: action.payload.data.data,
+       loading: false,
+       errors: {}
+     }
+   }
 
 
       debugger;

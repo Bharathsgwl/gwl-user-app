@@ -8,16 +8,11 @@ import {
   Link
 } from "react-router-dom";
 import ExamSection from "../ExamSection";
-
+import Header from "../../Header";
 import { connect } from "react-redux";
-import {
-  handleOnChange,
-  onClickStart,
-  setStatesFromResponse,handleOnSnackBarClose
-} from "../../../redux/actions";
-import { withRouter, Redirect } from "react-router-dom";
+import { handleOnChange, onClickStart } from "../../../redux/actions";
+import { withRouter } from "react-router-dom";
 import CardHeader from "@material-ui/core/CardHeader";
-
 import {
   Card,
   CardContent,
@@ -26,97 +21,70 @@ import {
   AppBar,
   IconButton
 } from "@material-ui/core";
-
 import axios from "axios";
 import CardActions from "@material-ui/core/CardActions";
 
-class InstructionsPage extends React.Component {
-  state = {
-    examRule: [],
-    redirect: false
-  };
-  componentDidMount() {
-    this.validateUser();
-    this.varifyUser();
+class  InstructionsPage extends React.Component{
+  state={
+    examRule:[]
   }
-  validateUser = () => {
-    axios
-      .post(`https://evening-dawn-93464.herokuapp.com/api/verify`, {
-        auth_token: sessionStorage.getItem("auth_token")
-      })
-      .then(response => {
-        if (!response.data.isloggedIn) {
-          this.setState({ redirect: true });
-        }
-      })
-      .catch(error => console.log(error, "error"));
-    let msg = "user is not authorised";
-    this.props.setStatesFromResponse("message", msg);
-    this.props.handleOnSnackBarClose();
-  };
-  varifyUser = () => {
-    axios
-      .post(`https://evening-dawn-93464.herokuapp.com/api/validate`, {
-        auth_token: sessionStorage.getItem("serverAUTHTOKEN")
-      })
-      .then(response => {
-        let status = response.data.status;
-        if (status === 401) {
-          this.setState({ redirect: true });
-        }
-      })
-      .catch(error => console.log(error));
-  };
-  handleOnCLickStart = () => {
-    var { history } = this.props;
-    this.validateUser();
-    this.varifyUser();
-    this.props.onClickStart(history);
-  };
 
-  render() {
-    const { examRule } = this.state;
-    console.log(this.props, "instructions");
-    const {
-      rule,
-      handleOnChange,
-      disabled,
-      history,
-      onClickStart,
-      fetchPosts,
-      data,
-      user,
-      exam_rules = [],
-      handleOnCLickStart
-    } = this.props;
+  componentDidMount(){
+    axios.get("http://localhost:8080/api/exam_rules").then(response=>{
+      console.log(response.data,"abcv");
+      this.setRules(response.data.exam_rules);
+    }).catch(err=>{console.log(err)})
+  }
+  setRules= examRule=>{
+    this.setState({examRule})
+  }
+//   componentDidMount() {
+//   const { setTasks } = this;
+//   axios.get("http://localhost:8080/api/exam_rules")
+//     .then(response => {
+//       console.log(response,"res");
+//       setTasks(response.data.posts);
+//     })
+//     .catch(err => console.log(err));
+// }
 
-    var { rules } = this.props;
+// setTasks = taskList => {
+//   this.setState({ taskList });
+//   console.log(taskList,"tasks");
+// };
 
-    rules = examRule;
-
-    return (
-      <Grid justify content="center">
-        {this.state.redirect ? <Redirect to="/user/InstructionsPage" /> : null}
-        <Grid item md={12}>
-          <AppBar position="static" style={{ background: "#009688" }}>
-            <Toolbar>
-              <Typography
-                style={{ fontFamily: '"Apple Color Emoji"' }}
-                variant="h5"
-              >
-                GoodWorks Colloquio
-              </Typography>
-            </Toolbar>
-          </AppBar>
-        </Grid>
-        <Grid item md={6} style={{ margin: "auto" }}>
+  render(){
+    const {examRule} = this.state;
+  console.log(this.props,"instructions");
+  const { rule, handleOnChange, disabled, history, onClickStart } = this.props;
+  console.log(this.state.taskList[0],"rur=le");
+console.log(this.state.taskList.map(task=> task.rule_name),"dhd");
+console.log(rule[0],"rule");
+  return (
+    <Grid justify content="center">
+      <Grid item md={12}>
+        <AppBar position="static" style={{ background: "#009688" }}>
+          <Toolbar>
+            <Typography
+              style={{ fontFamily: '"Apple Color Emoji"' }}
+              variant="h5"
+            >
+              GoodWorks Colloquio
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Grid>
+      <br></br>
+      <br></br>
+      <br></br>
+      <Grid container justify="center">
+        <Grid item md={6}>
           <h1
             style={{
               textAlign: "center",
               fontFamily: "initial",
               color: "#009688",
-              paddingTop: "50px",
-              margin: "auto"
+              paddingTop: "50px"
             }}
           >
             Instructions
@@ -130,22 +98,30 @@ class InstructionsPage extends React.Component {
         </Grid>
         <Grid item sm={12}>
           <Card style={{ width: "70%", margin: "auto", height: "100%" }}>
-            {this.props.exam_rules.map((rule, index) => {
-              return (
-                <ul key={index}>
-                  {rule.priority === "high" || rule.priority === "High" ? (
-                    <li>
-                      <b>{rule.rule_name}</b>
-                    </li>
-                  ) : (
-                    <li>{rule.rule_name}</li>
-                  )}
-                </ul>
-              );
-            })}
+            
+          {
+           examRule.map((rule, index)=>{
+             return(
+               <ul key={index}>
+                 {(rule.priority==="high" || rule.priority==="High" )?<li><b>{rule.rule_name}</b></li>:<li>{rule.rule_name}</li>}
+               </ul>
+             )
+           })
+         } 
+            
+            {/* {this.state.taskList.map((r, index) => (
+              <ul>
+                <li key={index} classes={{ root: "instruction-line" }}>
+                  {r.rule_name}
+                </li>
+              </ul>
+            ))} */}
           </Card>
         </Grid>
-
+        <br />
+        <br />
+        <br />
+        <br />
         <Grid item md={12} style={{ textAlign: "center" }}>
           <Checkbox
             style={{ color: "#009688" }}
@@ -153,39 +129,29 @@ class InstructionsPage extends React.Component {
               handleOnChange("disabled", !e.target.checked);
             }}
           />
-          Agree and Continue,
+        Agree and Continue,
         </Grid>
-        <Grid item md={12} style={{ textAlign: "center" }}>
+        <Grid item md={1}>
           <Button
             variant="contained"
             color="primary"
             disabled={disabled}
             onClick={() => {
-              this.handleOnCLickStart();
+              onClickStart(history);
             }}
           >
             Start
           </Button>
         </Grid>
       </Grid>
-    );
-  }
+    </Grid>
+  );
 }
-const mapStateToProps = ({
-  disabled,
-  user,
-  post,
-  exam_rules,
-  sessionDetaill,
-  redirectt
-}) => {
+};
+const mapStateToProps = ({ disabled, rule }) => {
   return {
     disabled,
-    user,
-    post,
-    exam_rules,
-    sessionDetaill,
-    redirectt
+    rule
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -193,11 +159,7 @@ const mapDispatchToProps = dispatch => {
     handleOnChange: (property, value) => {
       dispatch(handleOnChange(property, value));
     },
-    onClickStart: history => dispatch(onClickStart(history)),
-    setStatesFromResponse: (attribute, val) => {
-      dispatch(setStatesFromResponse(attribute, val));
-    },
-    handleOnSnackBarClose: () => dispatch(handleOnSnackBarClose())
+    onClickStart: history => dispatch(onClickStart(history))
   };
 };
 
