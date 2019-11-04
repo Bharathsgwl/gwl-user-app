@@ -12,6 +12,7 @@
 .remainingtimecolor{
   color: white;
   padding-left: 146px;
+  vertical-align: top !important;
 }
 .examheadingcolor{
   color: white  !important;
@@ -22,7 +23,4 @@
 }
 .endtestbutton{
   direction: rtl;;
-}
-.material-icons{
-  padding: 0px 15px 0px !important;
 }

@@ -7,6 +7,7 @@ import InstructionsPage from './Components/MidSection/InstructionsPage';
 import ExamSection from './Components/MidSection/ExamSection';
 import LogoutSection from './Components/MidSection/LogoutSection';
 import Login from './Components/Login';
+import StartTestComponent from './Components/StartTestComponent';
 import AnswerList from './Components/MidSection/AnswerList';
 import {Provider} from 'react-redux';
 import store from './redux/store';
@@ -15,6 +16,7 @@ function App() {
     <Router>
     <Provider store={store} >
       <Route exact path="/" component={Login}/>
+        <Route exact path="/user/StartTestComponent" component={StartTestComponent} />
     <Route exact path="/user/InstructionsPage" component={InstructionsPage} />
     <Route exact path="/user/ExamSection" component={ExamSection} />
     <Route exact path="/user/logoutsection" component={LogoutSection} />
